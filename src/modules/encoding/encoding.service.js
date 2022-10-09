@@ -40,11 +40,6 @@ function convert_to_cp1251(str) {
     return ret;
 }
 
-const encodeWin1251ToUrl = str => {
-    return convert_to_cp1251(urlencode(str));
-}
-
-
 export const encodingService = {
     encodeWin1251ToUrl: (str) => convert_to_cp1251(urlencode(str))
 }

@@ -1,19 +1,46 @@
 import fs from 'fs/promises';
 
 export const filesService = {
-    createFiles: async (teacherName, results) => {
-        const { origin, plainOrigin } = results;
-
-        const folder = `./output/${teacherName.replaceAll(' ', '_')}`;
+    mkDirIfNotExists: async (path) => {
         try {
-            await fs.access(folder);
+            await fs.access(path);
         } catch (e) {
-            await fs.mkdir(`./output/${teacherName.replaceAll(' ', '_')}`);
+            await fs.mkdir(path);
+        }
+    },
+
+    rmDirIfExists: async (path) => {
+        try {
+            await fs.access(path);
+            await fs.rm(path, { recursive: true });
+        } catch (e) {}
+    },
+
+    createFiles: async (outputFolder, teacherName, results) => {
+        const { origin, plainOrigin, googleCalendarCsv } = results;
+        const filename = teacherName.replaceAll(' ', '_');
+
+        await filesService.mkDirIfNotExists(outputFolder);
+
+        if (origin) {
+            const folder = `${outputFolder}/origin`;
+            await filesService.mkDirIfNotExists(folder);
+            const filepath = `${folder}/${filename}.json`;
+            await fs.writeFile(filepath, JSON.stringify(origin, null, 2), 'utf8');
         }
 
-        const originFilePath = `./output/${teacherName.replaceAll(' ', '_')}/origin.json`;
-        const plainOriginFilePath = `./output/${teacherName.replaceAll(' ', '_')}/plainOrigin.json`;
-        await fs.writeFile(originFilePath, JSON.stringify(origin, null, 2), 'utf8');
-        await fs.writeFile(plainOriginFilePath, JSON.stringify(plainOrigin, null, 2), 'utf8');
+        if (plainOrigin) {
+            const folder = `${outputFolder}/plainOrigin`;
+            await filesService.mkDirIfNotExists(folder);
+            const filepath = `${folder}/${filename}.json`;
+            await fs.writeFile(filepath, JSON.stringify(origin, null, 2), 'utf8');
+        }
+
+        if (googleCalendarCsv) {
+            const folder = `${outputFolder}/calendar`;
+            await filesService.mkDirIfNotExists(folder);
+            const filepath = `${folder}/${filename}.csv`;
+            await fs.writeFile(filepath, googleCalendarCsv, 'utf8');
+        }
     }
 }

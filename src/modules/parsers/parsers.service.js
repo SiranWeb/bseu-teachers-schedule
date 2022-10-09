@@ -1,4 +1,44 @@
+import { weekDays } from '../constants/weekDays.js';
+
 export const parsersService = {
+    createGoogleCalendarCsvFromPlainOrigin: (plainOrigin, teacherName) => {
+        const header = '"Subject","Start Date","Start Time","End Date","End Time","All Day Event","Description","Location","Private"\n';
+        let result = header;
+        const shortTeacherName = teacherName.split(' ').reduce((acc, word) => acc + word[0].toUpperCase(), '');
+
+        const firstDayDate = new Date('2022-08-29');
+
+        for (const obj of plainOrigin) {
+            const { weekNum, startTime, endTime, type, classroom, dayName, name: subjectName } = obj;
+            const shortSubjectName = subjectName.replace(/-/gm, ' ').split(' ').reduce((acc, word) => acc + word[0].toUpperCase(), '');
+            const location = `БГЭУ: ${classroom}`;
+            const groups = obj.group.replace(/<br>/gm, ' ');
+            const shortType = type.substr(0, 3).toLowerCase();
+            const weekStr = `неделя: ${weekNum}`;
+            const dayDiff = (weekDays[dayName] - firstDayDate.getDay()) + ((+weekNum - 1) * 7);
+
+            const startDate = new Date(firstDayDate.getTime());
+            startDate.setDate(startDate.getDate() + dayDiff);
+            const [year, month, day] = startDate.toJSON().split('T')[0].split('-');
+            const dateStr = `${day}/${month}/${year}`;
+
+            const subjectCol = `"${shortTeacherName}; ${location}; (${shortSubjectName}); ${groups}; (${shortType}); ${weekStr}"`;
+            const startDateCol = `"${dateStr}"`;
+            const startTimeCol = `"${startTime}"`;
+            const endDateCol = `"${dateStr}"`;
+            const endTimeCol = `"${endTime}"`;
+            const allDayEventCol = `"False"`;
+            const descriptionCol = `"${teacherName}; ${location}; (${subjectName}); ${groups}; (${type}); ${weekStr}"`;
+            const locationCol = `"${location}"`;
+            const privateCol = `"True"`;
+
+            const row = `${subjectCol},${startDateCol},${startTimeCol},${endDateCol},${endTimeCol},${allDayEventCol},${descriptionCol},${locationCol},${privateCol}`;
+            result += `${row}\n`;
+        }
+
+        return result;
+    },
+
     convertOriginToPlain: (origin) => {
         const result = [];
 
