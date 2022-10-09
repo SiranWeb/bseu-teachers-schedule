@@ -1,8 +1,11 @@
 import { weekDays } from '../constants/weekDays.js';
 
 export const parsersService = {
-    createGoogleCalendarCsvFromPlainOrigin: (plainOrigin, teacherName) => {
+    createGoogleCalendarCsvFromPlainOrigin: (plainOrigin, teacherName, allCsv) => {
         const header = '"Subject","Start Date","Start Time","End Date","End Time","All Day Event","Description","Location","Private"\n';
+        if (!allCsv) {
+            allCsv = header;
+        }
         let result = header;
         const shortTeacherName = teacherName.split(' ').reduce((acc, word) => word[0] ? acc + word[0].toUpperCase() : acc, '');
 
@@ -34,9 +37,10 @@ export const parsersService = {
 
             const row = `${subjectCol},${startDateCol},${startTimeCol},${endDateCol},${endTimeCol},${allDayEventCol},${descriptionCol},${locationCol},${privateCol}`;
             result += `${row}\n`;
+            allCsv += `${row}\n`;
         }
 
-        return result;
+        return {singleCsv: result, allCsv};
     },
 
     convertOriginToPlain: (origin) => {

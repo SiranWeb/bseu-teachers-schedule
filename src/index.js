@@ -12,6 +12,7 @@ import { configService } from './modules/config/config.service.js';
   const outputFolder = './output';
   await filesService.rmDirIfExists(outputFolder);
 
+  let allGoogleCalendarCsv = '';
   let successCount = 0;
   let failureCount = 0;
   for (const rawTeacherName of teachers) {
@@ -40,7 +41,9 @@ import { configService } from './modules/config/config.service.js';
     const plainOrigin = parsersService.convertOriginToPlain(origin);
     let googleCalendarCsv;
     if (firstWeekDate) {
-      googleCalendarCsv = parsersService.createGoogleCalendarCsvFromPlainOrigin(plainOrigin, teacherName);
+      const result = parsersService.createGoogleCalendarCsvFromPlainOrigin(plainOrigin, teacherName, allGoogleCalendarCsv);
+      googleCalendarCsv = result.singleCsv;
+      allGoogleCalendarCsv = result.allCsv;
     }
 
 
@@ -51,7 +54,7 @@ import { configService } from './modules/config/config.service.js';
     }
 
     await filesService.createFiles(outputFolder, teacherName, {
-      origin, plainOrigin, googleCalendarCsv
+      origin, plainOrigin, googleCalendarCsv, allGoogleCalendarCsv
     });
 
     console.log(`${teacherName}: успешно!`);

@@ -17,7 +17,7 @@ export const filesService = {
     },
 
     createFiles: async (outputFolder, teacherName, results) => {
-        const { origin, plainOrigin, googleCalendarCsv } = results;
+        const { origin, plainOrigin, googleCalendarCsv, allGoogleCalendarCsv } = results;
         const filename = teacherName.replaceAll(' ', '_');
 
         await filesService.mkDirIfNotExists(outputFolder);
@@ -41,6 +41,12 @@ export const filesService = {
             await filesService.mkDirIfNotExists(folder);
             const filepath = `${folder}/${filename}.csv`;
             await fs.writeFile(filepath, googleCalendarCsv, 'utf8');
+        }
+
+        if (allGoogleCalendarCsv) {
+            await filesService.mkDirIfNotExists(outputFolder);
+            const filepath = `${outputFolder}/calendar-all.csv`;
+            await fs.writeFile(filepath, allGoogleCalendarCsv, 'utf8');
         }
     }
 }
