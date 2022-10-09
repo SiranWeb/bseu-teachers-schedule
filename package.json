@@ -1,0 +1,17 @@
+{
+  "name": "bseu-teacher-schedule-receiver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "bin": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "type": "module",
+  "author": "Kirill Gerasimenko <kirillg.web@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "jsdom": "^18.0.0",
+    "node-fetch": "^3.0.0"
+  }
+}
