@@ -20,7 +20,7 @@ export const parsersService = {
             const startDate = new Date(firstDayDate.getTime());
             startDate.setDate(startDate.getDate() + dayDiff);
             const [year, month, day] = startDate.toJSON().split('T')[0].split('-');
-            const dateStr = `${day}/${month}/${year}`;
+            const dateStr = `${month}/${day}/${year}`;
 
             const subjectCol = `"${shortTeacherName}; ${location}; (${shortSubjectName}); ${groups}; (${shortType}); ${weekStr}"`;
             const startDateCol = `"${dateStr}"`;
