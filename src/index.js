@@ -4,10 +4,13 @@ import { teachersService } from './modules/teachers/teachers.service.js';
 import { configService } from './modules/config/config.service.js';
 
 (async () => {
+  console.log('Скрипт подготовил: Кирилл Герасименко');
+
   const teachers = configService.get('teachers');
   const firstWeekDate = configService.get('firstWeekDate');
 
-  console.log('Скрипт подготовил: Кирилл Герасименко');
+  const outputFolder = './output';
+  await filesService.rmDirIfExists(outputFolder);
 
   let successCount = 0;
   let failureCount = 0;
@@ -47,8 +50,6 @@ import { configService } from './modules/config/config.service.js';
       continue;
     }
 
-    const outputFolder = './output';
-    await filesService.rmDirIfExists(outputFolder);
     await filesService.createFiles(outputFolder, teacherName, {
       origin, plainOrigin, googleCalendarCsv
     });
