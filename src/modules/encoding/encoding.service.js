@@ -1,4 +1,3 @@
-
 var t = {};
 
 t['%D0%B0']='%E0';t['%D0%B1']='%E1';t['%D0%B2']='%E2';t['%D0%B3']='%E3';t['%D0%B4']='%E4';
@@ -17,32 +16,35 @@ t['%D0%AC']='%DC';t['%D0%AB']='%DB';t['%D0%AA']='%DA';t['%D0%AD']='%DD';t['%D0%A
 t['%D0%AF']='%DF';
 
 function urlencode(str) {
-  str = (str + '').toString();
+    str = (str + '').toString();
 
-  return encodeURIComponent(str).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').
-  replace(/\)/g, '%29').replace(/\*/g, '%2A').replace(/%20/g, '+');
+    return encodeURIComponent(str).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').
+    replace(/\)/g, '%29').replace(/\*/g, '%2A').replace(/%20/g, '+');
 }
 
 function convert_to_cp1251(str) {
-  var ret='';
+    var ret='';
 
-  var l=str.length;
-  var i=0;
-  while (i<l) {
+    var l=str.length;
+    var i=0;
+    while (i<l) {
 
-    var f=0;
-    for (let keyVar in t) {
-      if (str.substring(i,i+6)==keyVar) {ret+=t[keyVar];i+=6;f=1;}
+        var f=0;
+        for (let keyVar in t) {
+            if (str.substring(i,i+6)==keyVar) {ret+=t[keyVar];i+=6;f=1;}
+        }
+
+        if (!f) {ret+=str.substring(i,i+1);i++;}
     }
 
-    if (!f) {ret+=str.substring(i,i+1);i++;}
-  }
-
-  return ret;
+    return ret;
 }
 
 const encodeWin1251ToUrl = str => {
-  return convert_to_cp1251(urlencode(str));
+    return convert_to_cp1251(urlencode(str));
 }
 
-export default encodeWin1251ToUrl;
+
+export const encodingService = {
+    encodeWin1251ToUrl: (str) => convert_to_cp1251(urlencode(str))
+}
