@@ -1,15 +1,13 @@
 import { weekDays } from '../constants/weekDays.js';
 
 export const parsersService = {
-    createGoogleCalendarCsvFromPlainOrigin: (plainOrigin, teacherName, allCsv) => {
+    createGoogleCalendarCsvFromPlainOrigin: (plainOrigin, teacherName, firstWeekDate, allCsv) => {
         const header = '"Subject","Start Date","Start Time","End Date","End Time","All Day Event","Description","Location","Private"\n';
         if (!allCsv) {
             allCsv = header;
         }
         let result = header;
         const shortTeacherName = teacherName.split(' ').reduce((acc, word) => word[0] ? acc + word[0].toUpperCase() : acc, '');
-
-        const firstDayDate = new Date('2022-08-29');
 
         for (const obj of plainOrigin) {
             const { weekNum, startTime, endTime, type, classroom, dayName, name: subjectName } = obj;
@@ -18,9 +16,9 @@ export const parsersService = {
             const groups = obj.group.replace(/<br>/gm, ' ');
             const shortType = type.substr(0, 3).toLowerCase();
             const weekStr = `неделя: ${weekNum}`;
-            const dayDiff = (weekDays[dayName] - firstDayDate.getDay()) + ((+weekNum - 1) * 7);
+            const dayDiff = (weekDays[dayName] - firstWeekDate.getDay()) + ((+weekNum - 1) * 7);
 
-            const startDate = new Date(firstDayDate.getTime());
+            const startDate = new Date(firstWeekDate.getTime());
             startDate.setDate(startDate.getDate() + dayDiff);
             const [year, month, day] = startDate.toJSON().split('T')[0].split('-');
             const dateStr = `${month}/${day}/${year}`;

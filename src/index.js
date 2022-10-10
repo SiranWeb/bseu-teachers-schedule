@@ -7,7 +7,8 @@ import { configService } from './modules/config/config.service.js';
   console.log('Скрипт подготовил: Кирилл Герасименко');
 
   const teachers = configService.get('teachers');
-  const firstWeekDate = configService.get('firstWeekDate');
+  const firstWeekDateStr = configService.get('firstWeekDate');
+  const firstWeekDate = new Date(firstWeekDateStr);
 
   const outputFolder = './output';
   await filesService.rmDirIfExists(outputFolder);
@@ -41,7 +42,7 @@ import { configService } from './modules/config/config.service.js';
     const plainOrigin = parsersService.convertOriginToPlain(origin);
     let googleCalendarCsv;
     if (firstWeekDate) {
-      const result = parsersService.createGoogleCalendarCsvFromPlainOrigin(plainOrigin, teacherName, allGoogleCalendarCsv);
+      const result = parsersService.createGoogleCalendarCsvFromPlainOrigin(plainOrigin, teacherName, firstWeekDate, allGoogleCalendarCsv);
       googleCalendarCsv = result.singleCsv;
       allGoogleCalendarCsv = result.allCsv;
     }
